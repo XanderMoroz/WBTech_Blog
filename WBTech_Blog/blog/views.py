@@ -1,11 +1,9 @@
 from django.shortcuts import render
-
-# Create your views here.
 from datetime import datetime
-
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from .models import Author, Post
+# Create your views here.
+
 
 class AuthorList(ListView):
     # Указываем модель, объекты которой мы будем выводить
@@ -48,6 +46,7 @@ class PostList(ListView):
     template_name = 'blog/post_list.html'
     # Слово, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'all_post_list'
+
 
     def get_context_data(self, **kwargs):
         # С помощью super() мы обращаемся к родительским классам
