@@ -37,3 +37,28 @@ class AuthorDetail(DetailView):
     template_name = 'blog/author_detail.html'
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'author_detail'
+
+
+class PostList(ListView):
+    # Указываем модель, объекты которой мы будем выводить (Объявление)
+    model = Post
+    # Поле, которое будет использоваться для сортировки объявлений
+    ordering = '-creation_date'
+    # Указываем имя шаблона, в котором будут все инструкции к показу объявлений
+    template_name = 'blog/post_list.html'
+    # Слово, чтобы обратиться к списку объектов в html-шаблоне.
+    context_object_name = 'all_post_list'
+
+    def get_context_data(self, **kwargs):
+        # С помощью super() мы обращаемся к родительским классам
+        # и вызываем у них метод get_context_data с теми же аргументами, что и были переданы нам.
+        # В ответе мы должны получить словарь.
+        context = super().get_context_data(**kwargs)
+        # К словарю добавим текущую дату в ключ 'time_now'.
+        context['time_now'] = datetime.utcnow()
+        return context
+
+class PostDetail(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post_detail'
