@@ -8,8 +8,6 @@ class Author(models.Model):
     postCount = models.IntegerField(default=0)
     lovelyAuthors = models.ManyToManyField(User, through='UserLovelyAuthors', related_name='user_Author')
 
-
-
 class Post(models.Model):
     '''
     Эта модель описывает пост, которые создают пользователи.
