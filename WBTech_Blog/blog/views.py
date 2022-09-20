@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from datetime import datetime
-from django.views.generic import ListView, DetailView
-from .models import Author, Post
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Author, Post, User
+from .forms import PostForm
 # Create your views here.
 
 
@@ -21,11 +23,11 @@ class AuthorList(ListView):
         # что и были переданы нам.
         # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
+
         # К словарю добавим текущую дату в ключ 'time_now'.
         context['time_now'] = datetime.utcnow()
         # Добавим ещё одну пустую переменную,
         # чтобы на её примере рассмотреть работу ещё одного фильтра.
-        context['next_sale'] = None
         return context
 
 class AuthorDetail(DetailView):
@@ -54,6 +56,7 @@ class PostList(ListView):
         # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
         # К словарю добавим текущую дату в ключ 'time_now'.
+
         context['time_now'] = datetime.utcnow()
         return context
 
@@ -61,3 +64,39 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post_detail'
+
+class PostCreate(CreateView, LoginRequiredMixin):
+    """
+    Класс представления для создания объявления.
+    Наследован от встроенного дженерика, миксина требующего авторизацию и миксина, требующего право доступа
+    """
+    model = Post
+    template_name = 'blog/crud/create.html'
+    form_class = PostForm
+
+    def get_initial(self):
+        """
+        Переопределение функции для автозаполнения поля "автор объявления"
+        """
+        initial = super().get_initial()
+        user = self.request.user
+        initial['author'] = user
+        return initial
+
+class PostUpdate(UpdateView, LoginRequiredMixin):
+    template_name = 'blog/crud/edit.html'
+    form_class = PostForm
+
+    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+class PostDelete(DeleteView, LoginRequiredMixin):
+    """
+    Класс представления для удаления объявления.
+    Наследован от встроенного дженерика.
+    """
+    template_name = 'blog/crud/delete.html'
+    queryset = Post.objects.all()
+    success_url = '/posts/'
