@@ -20,9 +20,26 @@ Post Details            <!-- Название у нас будет Post Details 
                  <!-- Добавим специальный фильтр "Цензор" для цензурирования непотребных слов.
                 Все остальные символы превратятся в многоточие. -->
                <td>{{ author_detail.postCount }}</td>
-               <td>{{ post_detail.creation_date }}</td>
+               <td>{{ author_detail.creation_date }}</td>
            </tr>
 
     </table>
+
+{% if request.user.is_authenticated %}
+    <p>
+        <h6>Вы можете подписаться на данного автора:</h6>
+
+        {% if request.user in author_detail.subscribers.all %}
+        <button><a href="{% url 'unsubscribe' author_detail.id %}">Отписаться</a></button>
+        {% else %}
+        <button><a href="{% url 'subscribe' author_detail.id %}">Подписаться</a></button>
+        {%endif%}
+
+    </p>
+{% endif %}
+
+
+
+
 
 {% endblock content %}

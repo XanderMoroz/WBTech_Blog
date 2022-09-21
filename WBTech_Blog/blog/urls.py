@@ -12,4 +12,7 @@ urlpatterns = [
     path('posts/create', PostCreate.as_view(), name='post_create'),
     path('posts/edit/<int:pk>', PostUpdate.as_view(), name='post_update'),
     path('posts/delete/<int:pk>', PostDelete.as_view(), name='post_delete'),
+
+    path('subscribe/<int:pk>', subscribe, name='subscribe'),
+    path('unsubscribe/<int:pk>', unsubscribe, name='unsubscribe'),
     ]

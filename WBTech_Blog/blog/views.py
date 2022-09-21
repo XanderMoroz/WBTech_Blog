@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Author, Post, User
+from .models import Author, Post, UserSubscribers
 from .forms import PostForm
 # Create your views here.
 
@@ -23,7 +23,6 @@ class AuthorList(ListView):
         # что и были переданы нам.
         # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
-
         # К словарю добавим текущую дату в ключ 'time_now'.
         context['time_now'] = datetime.utcnow()
         # Добавим ещё одну пустую переменную,
@@ -56,7 +55,6 @@ class PostList(ListView):
         # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
         # К словарю добавим текущую дату в ключ 'time_now'.
-
         context['time_now'] = datetime.utcnow()
         return context
 
@@ -100,3 +98,20 @@ class PostDelete(DeleteView, LoginRequiredMixin):
     template_name = 'blog/crud/delete.html'
     queryset = Post.objects.all()
     success_url = '/posts/'
+
+def subscribe(request, **kwargs):
+    author = Author.objects.get(pk=kwargs['pk'])
+    print(author)
+    user = request.user
+    print(user)
+    print(author.subscribers.all())
+    if user not in author.subscribers.all():
+        author.subscribers.add(user)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def unsubscribe(request, **kwargs):
+    author = Author.objects.get(pk=kwargs['pk'])
+    user = request.user
+    if user in author.subscribers.all():
+        author.subscribers.remove(user)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
