@@ -1,0 +1,28 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %} Личный кабинет пользователя {% endblock title %}
+
+{% block content %}
+
+<section class="section">
+        <h1 class="title">Посты авторов на которых вы подписаны</h1>
+<!--        <h2 class="subtitle">-->
+<!--        Всего откликов <strong>{{ user_feedbacks | length }}</strong>-->
+<!--            из них принято <strong>{{ accepted_feedbacks | length }}</strong>-->
+<!--        </h2>-->
+</section>
+<!--Форму от фильтров за нас сделает django. А вот кнопку, увы, придётся делать самому-->
+
+
+
+{% if request.user in post.author.subscribers.all %}
+
+{% for post in all_post_list %}
+{{ post }}
+{% endfor %}
+{% else %}
+
+<h2>Пока что вы не подписаны ни на одного автора!</h2>
+{% endif %}
+
+{% endblock content %}

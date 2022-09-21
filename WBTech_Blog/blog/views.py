@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Author, Post, UserSubscribers
 from .forms import PostForm
+from .filters import UserLovelyPostFilter
 # Create your views here.
 
 
@@ -101,10 +102,7 @@ class PostDelete(DeleteView, LoginRequiredMixin):
 
 def subscribe(request, **kwargs):
     author = Author.objects.get(pk=kwargs['pk'])
-    print(author)
     user = request.user
-    print(user)
-    print(author.subscribers.all())
     if user not in author.subscribers.all():
         author.subscribers.add(user)
     return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -115,3 +113,30 @@ def unsubscribe(request, **kwargs):
     if user in author.subscribers.all():
         author.subscribers.remove(user)
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+class UserPersonalPost(ListView, LoginRequiredMixin):
+    model = Post
+    ordering = '-creation_date'
+    template_name = 'protect/account/user_account.html'
+    context_object_name = 'all_post_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # К словарю добавим текущую дату в ключ 'time_now'.
+        context['time_now'] = datetime.utcnow()
+        current_user = self.request.user
+        # user_subscribed = UserSubscribers.objects.filter(subscribers=current_user)
+        # lovely_authors = user_subscribed.user.all #Author.objects.filter(usersubscribers=user)
+        # lovely_posts = Post.objects.filter(author=lovely_authors)
+        # user_unread = Post.objects.filter(status='UNREAD')
+
+        #context['post_unread'] = user_unread
+        # context['user_ads'] = user.advertisement_set.all
+        # user_feedbacks = Feedback.objects.filter(ad__user=user)
+        # context['user_feedbacks'] = user_feedbacks
+        # accepted_feedbacks = user_feedbacks.filter(acception=True)
+        # context['accepted_feedbacks'] = accepted_feedbacks
+        # вписываем наш фильтр (AdFilter) в контекст
+        #context['filter'] = UserLovelyPostFilter(self.request.GET, queryset=Post.objects.all)
+        return context

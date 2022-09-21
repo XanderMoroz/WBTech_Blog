@@ -15,4 +15,6 @@ urlpatterns = [
 
     path('subscribe/<int:pk>', subscribe, name='subscribe'),
     path('unsubscribe/<int:pk>', unsubscribe, name='unsubscribe'),
+
+    path('account/', UserPersonalPost.as_view(), name='user_account' )
     ]
