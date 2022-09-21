@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Author, Post, UserSubscribers
+from .models import *
 from .forms import PostForm
-from .filters import UserLovelyPostFilter
+from rest_framework import viewsets
+from .serializers import *
 # Create your views here.
 
 
@@ -140,3 +141,27 @@ class UserPersonalPost(ListView, LoginRequiredMixin):
         # вписываем наш фильтр (AdFilter) в контекст
         #context['filter'] = UserLovelyPostFilter(self.request.GET, queryset=Post.objects.all)
         return context
+
+
+
+# Create your views here.
+
+class AuthorListAPI(viewsets.ModelViewSet):
+    """Список всех авторов публикаций + создание автора"""
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+class AuthorDetailAPI(viewsets.ModelViewSet):
+    """Детальная информация об авторах + редактирование и удаление автора"""
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+class PostListAPI(viewsets.ModelViewSet):
+    """Список всех публикаций + создание публикации"""
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class PostDetailAPI(viewsets.ModelViewSet):
+    """Детальная информация о публикации + редактирование и удаление публикации"""
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
