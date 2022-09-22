@@ -38,10 +38,10 @@
             <!-- Информация справа-->
             <div class="media-right">
                 <p class="title is-4">
-                от {{ post.creation_date | date:' G:i' }}
+                от {{ post.creation_date | date:' d E Y G:i' }}
                 </p>
                 <p class="subtitle is-6">
-                    {{ post.creation_date | date:' d E Y' }}
+                    {{ post.get_status_display }}
                 </p>
             </div>
         </div>
@@ -50,6 +50,14 @@
             <br>
         </div>
     </div>
+
+    {% if request.user in post.userread.all %}
+    <!-- Добавляем кнопку удаления статьи. -->
+    <button><a href="{% url 'make_unread' post.id %}">Пометить как непрочитанный</a></button>
+    {% else %}
+    <button><a href="{% url 'make_read' post.id %}">Пометить как прочитанный</a></button>
+    {% endif %}
+
 
     <footer class="card-footer">
             <!-- добавим ссылку на подписку автора публикации-->

@@ -62,13 +62,22 @@ Posts
             <a href="{% url 'post_delete' post.id %}" class="card-footer-item">Удалить</a>
     </footer>
  {% else %}
+
+{% if request.user in post.author.subscribers.all %}
+    <footer class="card-footer">
+            <!-- добавим ссылку на подписку автора публикации-->
+            <a href="{% url 'unsubscribe' post.author.id %}" class="card-footer-item">
+                Отписаться от автора
+            </a>
+    </footer>
+    {% else %}
     <footer class="card-footer">
             <!-- добавим ссылку на подписку автора публикации-->
             <a href="{% url 'subscribe' post.author.id %}" class="card-footer-item">
                 Подписаться на автора
             </a>
-
     </footer>
+ {% endif %}
  {% endif %}
 </div>
 
