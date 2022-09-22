@@ -7,32 +7,61 @@ Posts
  
 <!-- В контенте на странице мы выводим все публикации -->
 {% block content %}
-    <h1>Все авторы  </h1>
-    <h3>{{ time_now|date:'M d Y' }}</h3>
-    <hr>
-    {% if author_list %}
-        <table>
-           <tr>
-               <td>Название</td>
-               <td>Дата публикации</td>
-           </tr>
-            <!-- Для каждой публикации будет генерироваться новая строчка,
-           т.е. новый HTML код, который указан в теле цикла.
-           При этом сам цикл работает точно так же, как и в Python.
-           post_list — переменная цикла, т.е. наша публикация полученный из списка -->
-           {% for author in author_list %}
-           <tr>
-               <!-- Не забываем, что переменные в шаблоне ничем не отличаются
-                от переменных в Python. Здесь также можно получать доступ к
-                полям объекта модели. Например, здесь мы выводим имя,
-                в следующем столбце дату создания публикации, и т.д.  -->
-               <td> <a href="{% url 'author_detail' author.id %}">{{ author.user.username }}</a> </td>
-               <td>{{ author.postCount }}</td>
-           </tr>
-           {% endfor %}
+<section class="section">
+        <h1 class="title">Список авторов блога на {{ time_now | date:'M d Y' }}</h1>
+        <h2 class="subtitle">
+        Здесь представлены все активные <strong>авторы</strong>, включая вас.
+        </h2>
+</section>
 
-       </table>
-   {% else %}
-       <h2>Публикации отсутствуют!</h2>
-   {% endif %}
+{% for author in author_list %}
+
+<div class="card">
+    <div class="card-content">
+        <div class="media">
+        <!-- Информация слева-->
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                </figure>
+            </div>
+
+            <div class="media-content">
+                <p class="title is-4">
+                <a href="{% url 'author_detail' author.id %}">{{ author.user.username }}
+                </a>
+                </p>
+            </div>
+            <!-- Информация справа-->
+            <div class="media-right">
+                <p class="title is-4">
+                Всего постов: {{ author.post_set.all | length }}
+                </p>
+            </div>
+        </div>
+    </div>
+{% if request.user.is_authenticated and request.user.username != author.user.username %}
+
+ {% if request.user in author.subscribers.all %}
+        <footer class="card-footer">
+            <!-- добавим ссылку на подписку автора публикации-->
+            <a href="{% url 'unsubscribe' author.id %}" class="card-footer-item">
+                Отписаться от автора
+            </a>
+        </footer>
+        {% else %}
+        <footer class="card-footer">
+            <!-- добавим ссылку на подписку автора публикации-->
+            <a href="{% url 'subscribe' author.id %}" class="card-footer-item">
+                Подписаться на автора
+            </a>
+        </footer>
+    {% endif %}
+    {% endif %}
+</div>
+<br>
+
+{% endfor %}
+
+
 {% endblock content %}

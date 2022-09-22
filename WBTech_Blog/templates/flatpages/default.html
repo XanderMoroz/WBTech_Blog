@@ -2,49 +2,146 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Bare - Start Bootstrap Template</title>
+        <title>Hello, WB_Tech BLOG!</title>
+        <!-- Подключаем картинки из файла статик-->
+        {% load static %}
 
-         {% load static %}
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <!-- Подключаем иконки "fontawesome"-->
+        <script src="https://kit.fontawesome.com/d74256e39d.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-           <div class="container">
-               <a class="navbar-brand" href="#">WBTech_Blog</a>
-               <button class="navbar-toggler" type="button" data-toggle="collapse"
-                       data-target="#navbarResponsive"
-                       aria-controls="navbarResponsive" aria-expanded="false"
-                       aria-label="Toggle navigation">
-                   <span class="navbar-toggler-icon"></span>
-               </button>
-               <div class="collapse navbar-collapse" id="navbarResponsive">
-                   <ul class="navbar-nav ml-auto">
+        <nav class="navbar is-light has-shadow" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+            <a class="navbar-item">
+            <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
+            </a>
 
-                       <li class="nav-item">
-                           <a class="nav-link" href="{% url 'author_list' %}">Авторы</a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="{% url 'post_list' %}">Публикации</a>
-                       </li>
-           </ul>
-       </div>
-   </div>
-</nav>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            </a>
+            </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item"  href="{% url 'author_list' %}">
+                    <span class="icon">
+                    <i class="fa-solid fa-people-group"></i>
+                    </span>
+                    <span> Все авторы </span>
+                </a>
+                <a class="navbar-item"  href="{% url 'post_list' %}">
+                    <span class="icon">
+                    <i class="fa-solid fa-list"></i>
+                    </span>
+                    <span> Все публикации </span>
+                </a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        REST API
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                            About
+                        </a>
+                        <a class="navbar-item">
+                            Jobs
+                        </a>
+                        <a class="navbar-item">
+                            Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        {% if request.user.is_authenticated %}
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="navbar-item" >
+                    <span> Привет, {{ request.user.username }}!
+                    </span>
+                </a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        <span class="icon"><i class="fa-solid fa-user"></i></span>
+                        <span>Личный кабинет</span>
+                    </a>
+                    <div class="navbar-dropdown" >
+                        <a class="navbar-item" href="{% url 'user_account' %}">
+                            <span class="icon"><i class="fa-solid fa-list"></i></span>
+                            <span>Избранное</span>
+                        </a>
+                        <a class="navbar-item" href="{% url 'post_create' %}">
+                            <span class="icon"><i class="fa-solid fa-pen"></i></span>
+                            <span>Создать</span>
+
+                        <hr class="navbar-divider">
+                        <a class="navbar-item" href="{% url 'logout' %}">
+                            <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                            <span>Выйти</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {% else %}
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="navbar-item" >
+                    <span> Вы еще не авторизованы
+                    </span>
+                </a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        <span class="icon"><i class="fa-solid fa-user"></i></span>
+                        <span>Личный кабинет</span>
+                    </a>
+                    <div class="navbar-dropdown" >
+                        <a class="navbar-item" href="{% url 'login' %}">
+                            <span class="icon"><i class="fa-solid fa-right-to-bracket"></i></span>
+                            <span>Войти</span>
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item" href="{% url 'signup' %}">
+                            <span class="icon"><i class="fa-solid fa-address-card"></i></i></span>
+                            <span>Регистрация</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+
+        </div>
+        </nav>
+        <!-- Responsive navbar finish-->
+
         <!-- Page content-->
-<div class="container">
-   <div class="row">
-       <div class="col-lg-12 text-center">
-           {% block content %}
-           {{ flatpage.content }}
-           {% endblock content %}
-       </div>
-   </div>
-</div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                {% block content %}
+                {{ flatpage.content }}
+                {% endblock content %}
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>

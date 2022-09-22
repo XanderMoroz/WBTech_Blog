@@ -5,7 +5,6 @@ from django.db import models
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    #postCount = models.IntegerField(default=0)
     subscribers = models.ManyToManyField(User, through='UserSubscribers', related_name='author_subscribers')
 
     def __str__(self):

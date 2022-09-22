@@ -9,21 +9,99 @@ Post Details            <!-- Название у нас будет Post Details 
 
 {% block content %} <!-- В контенте на странице мы выводим саму публикацию, идентификатор которой был передан в url -->
 
-    <table>
-            <tr>
-               <td>Автор</td>
-               <td>Название</td>
-               <td>Содержание</td>
-               <td>Дата публикации</td>
-            </tr>
+<div class="card">
+    <div class="card-content">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-48x48">
+                <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                </figure>
+            </div>
 
-            <tr>
-               <td>{{ post_detail.author }}</td>
-               <td>{{ post_detail.title }}</td>
-               <td>{{ post_detail.content }}</td>
-               <td>{{ post_detail.creation_date | date:'d.M.Y' }}</td>
-           </tr>
+        <div class="media-content">
+            <p class="title is-4">
+                <a href="{% url 'author_detail' post_detail.author.id %}">
+                    {{ post_detail.author }}
+                </a>
+            </p>
+<!--            <p class="subtitle is-6">{{ post_detail.creation_date | date:' d E Y G:i' }}</p>-->
+        </div>
+        <div class="media-right">
+            <p class="title is-4">
+                {{ post_detail.creation_date | date:' d E Y G:i' }}
+            </p>
+            <p class="subtitle is-6">
 
-    </table>
+            </p>
+        </div>
+    </div>
+        <!-- Название статьи. -->
+    <div class="content">
+        <p class="title is-3 is-spaced has-text-centered">
+            {{ post_detail.title }}
+        </p>
+        <br>
+        <!-- Содержание статьи. -->
+        <p>
+            {{ post_detail.content }}
+        </p>
+
+        <!-- Если пользователь является автором статьи. -->
+        {% if request.user.username == post_detail.author.user.username %}
+
+        <!-- Добавляем кнопку редактирования статьи. -->
+        <div class="buttons is-right">
+            <button class="button is-success">
+                <span class="icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+                <span>
+                    <a href="{% url 'post_update' post_detail.id %}">
+                        <p class="has-text-white">
+                        Редактировать
+                        </p>
+                    </a>
+                </span>
+            </button>
+
+            <!-- Добавляем кнопку удаления статьи. -->
+            <button class="button is-danger">
+
+                <span>
+                    <a href="{% url 'post_delete' post_detail.id %}">
+                        <p class="has-text-white">
+                        Удалить
+                        </p>
+                    </a>
+                </span>
+                <span class="icon">
+                    <i class="fa-solid fa-trash"></i>
+                </span>
+            </button>
+        </div>
+
+        {% else %}
+
+        <div class="buttons is-right">
+            <button class="button is-success">
+                <span class="icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+                <span>
+                    <a href="{% url 'subscribe' post_detail.author.id %}">
+                        <p class="has-text-white">
+                        Подписаться на автора
+                        </p>
+                    </a>
+                </span>
+            </button>
+
+        </div>
+
+        {% endif %}
+        </div>
+    </div>
+</div>
+
 
 {% endblock content %}

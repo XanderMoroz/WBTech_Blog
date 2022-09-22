@@ -5,24 +5,62 @@
 {% block content %}
 
 <section class="section">
-        <h1 class="title">Посты авторов на которых вы подписаны</h1>
-<!--        <h2 class="subtitle">-->
-<!--        Всего откликов <strong>{{ user_feedbacks | length }}</strong>-->
-<!--            из них принято <strong>{{ accepted_feedbacks | length }}</strong>-->
-<!--        </h2>-->
+        <h1 class="title">Посты ваших любимых авторов</h1>
+        <h2 class="subtitle">
+        Тут находятся посты авторов, на которых вы <strong>подписаны</strong>
+        </h2>
 </section>
-<!--Форму от фильтров за нас сделает django. А вот кнопку, увы, придётся делать самому-->
 
-
-
-{% if request.user in post.author.subscribers.all %}
 
 {% for post in all_post_list %}
-{{ post }}
-{% endfor %}
-{% else %}
+{% if request.user in post.author.subscribers.all %}
+<div class="card">
+    <div class="card-content">
+        <div class="media">
+        <!-- Информация слева-->
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                </figure>
+            </div>
 
-<h2>Пока что вы не подписаны ни на одного автора!</h2>
+            <div class="media-content">
+                <p class="title is-4">
+                <a href="{% url 'post_detail' post.id %}">{{ post.title | truncatewords:7 }}
+                </a>
+                </p>
+                <p class="subtitle is-6">
+                    <a href="{% url 'author_detail' post.author.id %}">
+                        {{ post.author }}
+                    </a>
+                </p>
+            </div>
+            <!-- Информация справа-->
+            <div class="media-right">
+                <p class="title is-4">
+                от {{ post.creation_date | date:' G:i' }}
+                </p>
+                <p class="subtitle is-6">
+                    {{ post.creation_date | date:' d E Y' }}
+                </p>
+            </div>
+        </div>
+        <div class="content">
+            {{ post.content | truncatewords:20 }}
+            <br>
+        </div>
+    </div>
+
+    <footer class="card-footer">
+            <!-- добавим ссылку на подписку автора публикации-->
+            <a href="{% url 'unsubscribe' post.author.id %}" class="card-footer-item">
+                Отписаться от автора
+            </a>
+    </footer>
+
+
+
+
 {% endif %}
-
+{% endfor %}
 {% endblock content %}

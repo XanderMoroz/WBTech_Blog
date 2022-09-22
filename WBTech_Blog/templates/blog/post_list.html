@@ -7,30 +7,77 @@ Posts
  
 <!-- В контенте на странице мы выводим все публикации -->
 {% block content %}
-    <h1>Все публикации  </h1>
-    <h3>{{ time_now|date:'M d Y' }}</h3>
-    <hr>
-    {% if all_post_list %}
-        <table>
-           <tr>
-               <td>Автор</td>
-               <td>Название</td>
-               <td>Дата публикации</td>
-               <td>Предпросмотр</td>
-           </tr>
-           {% for post in all_post_list %}
-           <tr>
+<section class="section">
+        <h1 class="title">Свежие посты от других авторов на {{ time_now | date:'M d Y' }}</h1>
+        <h2 class="subtitle">
+        Здесь представлены последние добавленные <strong>посты</strong>, читайте и наслаждайтесь.
+        </h2>
+</section>
 
-               <td> <a href="{% url 'author_detail' post.author.id %}">{{ post.author }}</a> </td>
-               <td> <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a> </td>
-               <td>{{ post.creation_date | date:'d.M.Y' }}</td>
+    {% for post in all_post_list %}
 
-               <td>{{ post.content }}</td>
-           </tr>
-           {% endfor %}
+<div class="card">
+    <div class="card-content">
+        <div class="media">
+        <!-- Информация слева-->
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                </figure>
+            </div>
 
-       </table>
-   {% else %}
-       <h2>Публикации отсутствуют!</h2>
-   {% endif %}
+            <div class="media-content">
+                <p class="title is-4">
+                <a href="{% url 'post_detail' post.id %}">{{ post.title | truncatewords:7 }}
+                </a>
+                </p>
+                <p class="subtitle is-6">
+                    <a href="{% url 'author_detail' post.author.id %}">
+                        {{ post.author }}
+                    </a>
+                </p>
+            </div>
+            <!-- Информация справа-->
+            <div class="media-right">
+                <p class="title is-4">
+                от {{ post.creation_date | date:' G:i' }}
+                </p>
+                <p class="subtitle is-6">
+                    {{ post.creation_date | date:' d E Y' }}
+                </p>
+            </div>
+        </div>
+        <div class="content">
+            {{ post.content | truncatewords:20 }}
+            <br>
+        </div>
+    </div>
+
+{% if request.user.username == post.author.user.username %}
+
+    <footer class="card-footer">
+            <!-- добавим ссылку на редактирование публикации-->
+            <a href="{% url 'post_update' post.id %}" class="card-footer-item">Редактировать</a>
+            <!-- добавим ссылку на удаление публикации-->
+            <a href="{% url 'post_delete' post.id %}" class="card-footer-item">Удалить</a>
+    </footer>
+ {% else %}
+    <footer class="card-footer">
+            <!-- добавим ссылку на подписку автора публикации-->
+            <a href="{% url 'subscribe' post.author.id %}" class="card-footer-item">
+                Подписаться на автора
+            </a>
+
+    </footer>
+ {% endif %}
+</div>
+
+
+
+<br>
+
+{% endfor %}
+
+
+
 {% endblock content %}

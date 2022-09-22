@@ -21,7 +21,7 @@ urlpatterns = [
 
 
     # Rest API (Авторы)
-    path('api/v.0.1/authors', AuthorListAPI.as_view({'get': 'list', 'post': 'create'})),
+    path('api/v.0.1/authors', AuthorListAPI.as_view({'get': 'list', 'post': 'create'}), name='api_authors'),
     path('api/v.0.1/author/<int:pk>', AuthorDetailAPI.as_view({'get': 'retrieve',
                                                                'patch': 'partial_update',
                                                                'delete': 'destroy'})),

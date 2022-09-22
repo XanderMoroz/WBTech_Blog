@@ -3,10 +3,15 @@
 {% block title %} Post edit {% endblock title %}
  
 {% block content %}
-<h3>Создание публикации</h3>
+<section class="section">
+        <h1 class="title">Редактирование поста</h1>
+        <h2 class="subtitle">
+        Здесь вы можете <strong>исправить</strong> свой пост. Поправьте поля, расположенные ниже.
+        </h2>
+</section>
 <form method="POST">
     {% csrf_token %} 
-    {{ form }} <!-- Теперь нам нужна только готовая форма и кнопка -->
+    {{ form.as_table }} <!-- Теперь нам нужна только готовая форма и кнопка -->
     <input type="submit" value="Принять изменения">
 </form>
 {% endblock content %}
