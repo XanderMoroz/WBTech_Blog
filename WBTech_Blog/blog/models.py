@@ -36,6 +36,12 @@ class UserSubscribers(models.Model):
     user = models.ForeignKey(Author, on_delete=models.CASCADE)
     subscribers = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.subscribers} подписался на {self.user}'
+
 class UserReadPost(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     userread = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.userread} прочитал {self.post}'

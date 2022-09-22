@@ -53,9 +53,39 @@
 
     {% if request.user in post.userread.all %}
     <!-- Добавляем кнопку удаления статьи. -->
-    <button><a href="{% url 'make_unread' post.id %}">Пометить как непрочитанный</a></button>
+
+    <div class="buttons is-right">
+            <button class="button is-danger">
+                <span class="icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+                <span>
+                    <a href="{% url 'make_unread' post.id %}">
+                        <p class="has-text-white">
+                        Пометить как непрочитанный
+                        </p>
+                    </a>
+                </span>
+            </button>
+        </div>
+
+
     {% else %}
-    <button><a href="{% url 'make_read' post.id %}">Пометить как прочитанный</a></button>
+    <div class="buttons is-right">
+            <button class="button is-success">
+                <span class="icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+                <span>
+                    <a href="{% url 'make_read' post.id %}">
+                        <p class="has-text-white">
+                        Пометить как прочитанный
+                        </p>
+                    </a>
+                </span>
+            </button>
+        </div>
+
     {% endif %}
 
 
