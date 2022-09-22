@@ -8,13 +8,10 @@ from rest_framework import viewsets
 from .serializers import *
 # Create your views here.
 
-
 class AuthorList(ListView):
-    # Указываем модель, объекты которой мы будем выводить
+
     model = Author
     template_name = 'author_list.html'
-    # Это имя списка, в котором будут лежать все объекты.
-    # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'author_list'
 
     # Метод get_context_data позволяет нам изменить набор данных,
@@ -32,20 +29,19 @@ class AuthorList(ListView):
         return context
 
 class AuthorDetail(DetailView):
-    # Модель всё та же, но мы хотим получать информацию по отдельному товару
+    # Модель всё та же, но мы хотим получать информацию по отдельному автору
     model = Author
-    # Используем другой шаблон — product.html
     template_name = 'blog/author_detail.html'
-    # Название объекта, в котором будет выбранный пользователем продукт
+    # Название объекта, в котором будет выбранный пользователем автор
     context_object_name = 'author_detail'
 
 
 class PostList(ListView):
-    # Указываем модель, объекты которой мы будем выводить (Объявление)
+    # Указываем модель, объекты которой мы будем выводить (Пост)
     model = Post
-    # Поле, которое будет использоваться для сортировки объявлений
+    # Поле, которое будет использоваться для сортировки постов
     ordering = '-creation_date'
-    # Указываем имя шаблона, в котором будут все инструкции к показу объявлений
+    # Указываем имя шаблона, в котором будут все инструкции к показу постов
     template_name = 'blog/post_list.html'
     # Слово, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'all_post_list'
@@ -67,7 +63,7 @@ class PostDetail(DetailView):
 
 class PostCreate(CreateView, LoginRequiredMixin):
     """
-    Класс представления для создания объявления.
+    Класс представления для создания поста.
     Наследован от встроенного дженерика, миксина требующего авторизацию и миксина, требующего право доступа
     """
     model = Post
@@ -76,7 +72,7 @@ class PostCreate(CreateView, LoginRequiredMixin):
 
     def get_initial(self):
         """
-        Переопределение функции для автозаполнения поля "автор объявления"
+        Переопределение функции для автозаполнения поля "автор поста"
         """
         initial = super().get_initial()
         user = self.request.user
@@ -102,6 +98,7 @@ class PostDelete(DeleteView, LoginRequiredMixin):
     success_url = '/posts/'
 
 def subscribe(request, **kwargs):
+    """Подписаться на автора"""
     author = Author.objects.get(pk=kwargs['pk'])
     user = request.user
     if user not in author.subscribers.all():
@@ -109,6 +106,7 @@ def subscribe(request, **kwargs):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def unsubscribe(request, **kwargs):
+    """Отписаться от автора"""
     author = Author.objects.get(pk=kwargs['pk'])
     user = request.user
     if user in author.subscribers.all():
@@ -116,9 +114,12 @@ def unsubscribe(request, **kwargs):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
+
 class UserPersonalPost(ListView, LoginRequiredMixin):
+    """Лента пользователя"""
     model = Post
     ordering = '-creation_date'
+    paginate_by = 10
     template_name = 'protect/account/user_account.html'
     context_object_name = 'all_post_list'
 
@@ -126,25 +127,25 @@ class UserPersonalPost(ListView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
         # К словарю добавим текущую дату в ключ 'time_now'.
         context['time_now'] = datetime.utcnow()
-        current_user = self.request.user
-        # user_subscribed = UserSubscribers.objects.filter(subscribers=current_user)
-        # lovely_authors = user_subscribed.user.all #Author.objects.filter(usersubscribers=user)
-        # lovely_posts = Post.objects.filter(author=lovely_authors)
-        # user_unread = Post.objects.filter(status='UNREAD')
-
-        #context['post_unread'] = user_unread
-        # context['user_ads'] = user.advertisement_set.all
-        # user_feedbacks = Feedback.objects.filter(ad__user=user)
-        # context['user_feedbacks'] = user_feedbacks
-        # accepted_feedbacks = user_feedbacks.filter(acception=True)
-        # context['accepted_feedbacks'] = accepted_feedbacks
-        # вписываем наш фильтр (AdFilter) в контекст
-        #context['filter'] = UserLovelyPostFilter(self.request.GET, queryset=Post.objects.all)
         return context
 
+def make_post_read(request, **kwargs):
+    """Пометить пост как прочитанный"""
+    current_post = Post.objects.get(pk=kwargs['pk'])
+    current_user = request.user
+    if current_user not in current_post.userread.all():
+        current_post.userread.add(current_user)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def make_post_unread(request, **kwargs):
+    """Пометить пост как непрочитанный"""
+    current_post = Post.objects.get(pk=kwargs['pk'])
+    current_user = request.user
+    if current_user in current_post.userread.all():
+        current_post.userread.remove(current_user)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
-# Create your views here.
 
 class AuthorListAPI(viewsets.ModelViewSet):
     """Список всех авторов публикаций + создание автора"""
