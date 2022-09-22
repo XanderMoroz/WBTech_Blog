@@ -18,7 +18,9 @@ urlpatterns = [
     path('unsubscribe/<int:pk>', unsubscribe, name='unsubscribe'),
     # лента пользователя
     path('account/', UserPersonalPost.as_view(), name='user_account'),
-
+    # пометка поста (прочитанный/непрочитанный)
+    path('make_read/<int:pk>', make_post_read, name='make_read'),
+    path('make_unread/<int:pk>', make_post_unread, name='make_unread'),
 
     # Rest API (Авторы)
     path('api/v.0.1/authors', AuthorListAPI.as_view({'get': 'list', 'post': 'create'}), name='api_authors'),
@@ -30,5 +32,4 @@ urlpatterns = [
     path('api/v.0.1/post/<int:pk>', PostDetailAPI.as_view({'get': 'retrieve',
                                                            'patch': 'partial_update',
                                                            'delete': 'destroy'})),
-
-    ]
+]
