@@ -24,8 +24,7 @@ class Post(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     title = models.CharField(max_length=255, verbose_name='Заголовок')
     content = models.CharField(max_length=256, verbose_name='Содержание')
-    status = models.CharField(max_length=6, choices=[('UNREAD', 'Непрочитанный'), ('READ', 'Прочитанный')], default='UNREAD',
-                                verbose_name='Статус')
+    userread = models.ManyToManyField(User, through='UserReadPost', related_name='post_read')
 
     def __str__(self):
         return f'{self.title} {self.author}'
@@ -36,3 +35,7 @@ class Post(models.Model):
 class UserSubscribers(models.Model):
     user = models.ForeignKey(Author, on_delete=models.CASCADE)
     subscribers = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class UserReadPost(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    userread = models.ForeignKey(User, on_delete=models.CASCADE)
