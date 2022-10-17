@@ -26,5 +26,5 @@ Class | Method | HTTP request | Description
 *AuthorListAPI* | [**api/v.0.1/list_create**](docs/SubmitDataApi.md#') | **GET**, **POST** /authors | Список авторов и добавление нового автора
 *AuthorDetailAPI* | [**api/v.0.1/retrieve_partial_update_destroy**](docs/SubmitDataApi.md#) | **GET**,**PATCH**, **DELETE** /author/{id}/ |  Извлечение, редактирование и удаление автора
 *PostListAPI* | [**api/v.0.1/list_create**](docs/SubmitDataApi.md#) | **GET** **POST** /posts | Список постов и добавление нового поста
-*PostDetailAPI* | [**retrieve_partial_update_destroy**](docs/SubmitDataApi.md#api/v.0.1/) | **GET**,**PATCH**, **DELETE** /post/{id}/ | Извлечение, редактирование и удаление автора
+*PostDetailAPI* | [**retrieve_partial_update_destroy**](docs/SubmitDataApi.md#api/v.0.1/) | **GET**,**PATCH**, **DELETE** /post/{id}/ | Извлечение, редактирование и удаление поста
 
