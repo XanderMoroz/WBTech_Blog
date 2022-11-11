@@ -1,5 +1,5 @@
 ### WBTech_Blog (Веб-сервис + API)
-Version: 0.1.0
+Version: 0.1.0 
 ![Screen Shot](Demo_scrincast.gif)
 
 ### Описание проекта
